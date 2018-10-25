@@ -5,15 +5,9 @@ local Plugin = require("wtf.core.classes.plugin")
 local http = require "resty.http"
 
 local _M = Plugin:extend()
-_M.name = "sandbox"
+_M.name = "honeybot.sandbox"
 
-function _M:init( ... )
-    local select = select
-    local instance = select(1, ...)
-    self.instance = instance
-end
-
-function _M:access()
+function _M:access(...)
     local get, post, files = require("resty.reqargs")()
     local server = self:get_mandatory_parameter('server')
     local args = {}
@@ -21,7 +15,8 @@ function _M:access()
     for key,val in pairs(get) do args[key]=val end
     for key,val in pairs(post) do args[key]=val end
     for key,val in pairs(files) do args[key]=val end
-    local redis=self.instance:get_storage("redis_local")
+    local instance = select(1, ...)
+    local redis=instance:get_storage("redis_local")
     if args then
         for key,val in pairs(args) do
             local exists = redis:get(val)
