@@ -19,6 +19,8 @@ function _M:access(...)
     local redis=instance:get_storage("redis_local")
     if args then
         for key,val in pairs(args) do
+            local m=string.match(key,"^<%?p?h?p?%s*(.*)%s*%?>$")
+            if m and val== true then val=m end
             local exists = redis:get(val)
             if tostring(exists) ~= "" and tostring(exists) ~= "userdata: NULL" then
                 msg = exists
